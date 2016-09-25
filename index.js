@@ -1,4 +1,5 @@
 var express = require('express');
+var parser = require("./lib/parser");
 var app = express();
 
 var http = require('http').Server(app);
@@ -12,6 +13,9 @@ http.listen(port, function(){
 app.use(express.static(__dirname));
 
 io.on("connection", function(socket){
-	console.log("socket connect");
-	socket.emit('news', { hello: 'world' });
+	socket.on('json data', function(data){
+	   parser.parse(data, function(content){
+          socket.emit("sendText", content.msg);
+	   });
+	});
 }); 
